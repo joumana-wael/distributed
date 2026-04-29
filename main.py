@@ -1,6 +1,7 @@
 from Workers.gpu_worker import GPUWorker
 from lb.load_balancer import LoadBalancer
 from Master.Scheduler import Scheduler
+from client.load_generator import run_load_test
 
 def main():
     # Create GPU workers
