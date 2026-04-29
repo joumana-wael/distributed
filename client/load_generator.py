@@ -1,11 +1,7 @@
+# client/load_generator.py
 
 import threading
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from Common.models import Request
+from common.request import Request
 
 
 class ClientLoadGenerator:
