@@ -2,7 +2,7 @@
 
 import time
 import threading
-from common.models import Request, Response
+from Common.models import Request, Response
 
 class Scheduler:
     def __init__(self, load_balancer):
