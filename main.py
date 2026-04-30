@@ -6,6 +6,7 @@ from lb.load_balancer import LoadBalancer
 from lb.global_load_balancer import GlobalLoadBalancer
 from Master.Scheduler import Scheduler
 from client.load_generator import run_load_test
+from llm.inference import preload_model
 
 
 def fail_worker_later(worker, delay):
@@ -53,33 +54,38 @@ def main():
         strategy="global_round_robin"
     )
 
-    # Fault simulation threads
-    # Worker-level failures
+    # Keep these defined, but do not start them while testing the real model
     worker_failure_1 = threading.Thread(
         target=fail_worker_later,
-        args=(workers_a[2], 0.10)   # Fail Worker 2 in Pool A
+        args=(workers_a[2], 0.10)
     )
 
     worker_failure_2 = threading.Thread(
         target=fail_worker_later,
-        args=(workers_b[2], 0.15)   # Fail Worker 6 in Pool B
+        args=(workers_b[2], 0.15)
     )
 
-    # Master-level failure
     master_failure = threading.Thread(
         target=fail_master_later,
-        args=(master1, 0.05)        # Fail Master 1
+        args=(master1, 0.05)
     )
 
-    worker_failure_1.start()
-    worker_failure_2.start()
-    master_failure.start()
+    # REAL LLM TEST MODE:
+    # Do NOT start fault tolerance threads here.
+    # worker_failure_1.start()
+    # worker_failure_2.start()
+    # master_failure.start()
 
+    # Load model once before starting client threads
+    preload_model()
+
+    # Start with 1 user only. After it works, try 5.
     run_load_test(global_lb, num_users=1000)
 
-    worker_failure_1.join()
-    worker_failure_2.join()
-    master_failure.join()
+    # Do NOT join fault threads because they were not started.
+    # worker_failure_1.join()
+    # worker_failure_2.join()
+    # master_failure.join()
 
     master1.print_master_summary()
     master2.print_master_summary()
