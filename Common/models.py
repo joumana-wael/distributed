@@ -1,22 +1,15 @@
-from dataclasses import dataclass, field
-from time import perf_counter
-from typing import Any, Dict
+from dataclasses import dataclass
 
 
 @dataclass
 class Request:
-    request_id: str
+    id: int
     query: str
-    created_at: float = field(default_factory=perf_counter)
-    metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class Response:
-    request_id: str
-    worker_id: str
-    answer: str
-    latency_ms: float
-    success: bool = True
-    error: str = ""
+    id: int
+    result: str
+    latency: float
 
