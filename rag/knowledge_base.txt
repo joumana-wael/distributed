@@ -1,0 +1,57 @@
+Load balancing is the process of distributing incoming requests across multiple servers or worker nodes to improve performance, reduce latency, and prevent overload on a single node.
+
+Round Robin is a load balancing strategy that distributes requests sequentially across available workers in equal order.
+
+Least Connections is a load balancing strategy that sends new requests to the worker with the fewest active connections.
+
+Load-aware routing selects workers based on current load, active tasks, and performance metrics such as latency or utilization.
+
+Fault tolerance is the ability of a distributed system to continue operating even when one or more nodes fail.
+
+In this project, worker fault tolerance is implemented by checking worker health through REST API endpoints and skipping unavailable workers.
+
+In this project, master node fault tolerance is implemented by the global load balancer checking master health and routing requests only to available master nodes.
+
+RAG stands for Retrieval-Augmented Generation. It retrieves relevant information from a knowledge base and provides it as context to the LLM before generating an answer.
+
+A master node coordinates request scheduling, monitors performance, and forwards requests to a local load balancer.
+
+A worker node processes the request, retrieves context using RAG, runs LLM inference, and returns the final response.
+
+The Global Load Balancer is the entry point of the system. It receives real user requests through a REST API and distributes them across available master nodes.
+
+A Master Node coordinates request handling. It receives requests from the Global Load Balancer, forwards them to its local Load Balancer, tracks request counts, monitors latency, and handles failures.
+
+A Local Load Balancer belongs to a Master Node and distributes requests across that master's worker pool.
+
+Worker Nodes are responsible for executing the main processing task. Each worker retrieves context using the RAG module, runs LLM inference, and returns the response with timing and status information.
+
+REST API communication allows different system components to run as independent services. In this project, the Global Load Balancer communicates with Master Nodes through REST APIs, and Master Nodes communicate with Worker Nodes through REST APIs.
+
+Round Robin distributes requests sequentially across available nodes. It is simple, fair, and works well when all nodes have similar processing capacity.
+
+Least Connections sends each new request to the node with the fewest active connections. It is useful when some requests take longer than others.
+
+Load-aware routing considers metrics such as active tasks, latency, and utilization before selecting a node. It is useful when workers have different performance levels.
+
+Fault tolerance allows the system to continue operating when one or more nodes fail. Failed nodes are detected through health-check endpoints and excluded from scheduling decisions.
+
+Worker fault tolerance is implemented by checking each worker's health endpoint before assigning tasks. If a worker fails, the local Load Balancer skips it and reassigns tasks to healthy workers in the same pool.
+
+Master-node fault tolerance is implemented by checking each master's health endpoint before routing requests. If a master fails, the Global Load Balancer redirects traffic to the remaining healthy master node.
+
+Scalability means the system can handle increasing numbers of requests by distributing work across more masters and workers.
+
+Latency measures the time taken to complete a request. Throughput measures how many requests the system can process per second.
+
+RAG stands for Retrieval-Augmented Generation. It retrieves relevant facts from the knowledge base and passes them to the LLM as context before generating an answer.
+
+The real LLM inference module uses a Hugging Face model to generate answers from the user query and retrieved context.
+
+In the two-master architecture, Master Node 1 controls Workers 0 to 3, while Master Node 2 controls Workers 4 to 7.
+
+Question: What is 2+2?
+Answer: 2+2 = 4.
+
+The sum of 2 plus 2 is 4.
+
