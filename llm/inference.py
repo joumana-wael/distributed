@@ -6,6 +6,10 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 MODEL_NAME = "google/flan-t5-small"
 
+# Automatically use GPU if CUDA is available, otherwise use CPU
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+MODEL_DTYPE = torch.float16 if DEVICE == "cuda" else torch.float32
+
 _tokenizer = None
 _model = None
 
@@ -19,19 +23,26 @@ def load_model():
     with _load_lock:
         if _tokenizer is None or _model is None:
             print("[LLM] Loading real model...")
+            print(f"[LLM] CUDA available: {torch.cuda.is_available()}")
+            print(f"[LLM] Using device: {DEVICE}")
+
+            if DEVICE == "cuda":
+                print(f"[LLM] GPU name: {torch.cuda.get_device_name(0)}")
 
             _tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
             _model = AutoModelForSeq2SeqLM.from_pretrained(
                 MODEL_NAME,
-                dtype=torch.float32,
+                dtype=MODEL_DTYPE,
                 low_cpu_mem_usage=False,
                 device_map=None
             )
 
-            _model.to("cpu")
+            _model.to(DEVICE)
             _model.eval()
 
+            # This proves where the model is actually loaded
+            print(f"[LLM] Model parameter device: {next(_model.parameters()).device}")
             print("[LLM] Model loaded successfully.")
 
     return _tokenizer, _model
@@ -43,9 +54,9 @@ def preload_model():
 
 def extract_direct_answer(context):
     """
-    If the retrieved RAG context contains a direct answer line like:
+    If the RAG context contains a direct answer line like:
     Answer: 2+2 = 4.
-    return that answer directly instead of asking the small LLM to rewrite it.
+    return that exact answer for simple factual/math questions.
     """
     for line in context.splitlines():
         line = line.strip()
@@ -57,6 +68,19 @@ def extract_direct_answer(context):
                 return answer
 
     return None
+
+
+def is_math_or_exact_fact_query(query):
+    """
+    Only bypass the LLM for simple math/exact fact queries.
+    For explanation questions, the LLM should still generate the answer.
+    """
+    query_lower = query.lower()
+
+    if re.search(r"\d+\s*[\+\-\*/]\s*\d+", query_lower):
+        return True
+
+    return False
 
 
 def is_weak_answer(answer):
@@ -84,11 +108,11 @@ def is_weak_answer(answer):
     if cleaned in weak_answers:
         return True
 
-    # Catches weak outputs like "(4).", "4.", "(a)", "option c", etc.
+    # Catches weak outputs like "(4).", "4.", "(a)", etc.
     if len(cleaned.split()) < 4:
         return True
 
-    # Catches answers that are mostly symbols / option-like fragments.
+    # Catches answers that are mostly symbols or option-like fragments
     if re.fullmatch(r"[\(\)\[\]\{\}\.\,\:\;\-\w]{1,8}", cleaned):
         return True
 
@@ -97,13 +121,12 @@ def is_weak_answer(answer):
 
 def looks_repetitive(answer):
     """
-    Detects simple repeated-generation behavior from small models.
+    Detects repeated-generation behavior from small models.
     Example:
     '2+2 = 4 - 2 = 4 - 2 = 4'
     """
     cleaned = answer.strip().lower()
 
-    # Repeated phrase around separators.
     parts = re.split(r"\s*[-|;]\s*", cleaned)
     parts = [p.strip() for p in parts if p.strip()]
 
@@ -113,7 +136,6 @@ def looks_repetitive(answer):
         if len(unique_parts) <= 2:
             return True
 
-    # Too many repeated short expressions.
     tokens = cleaned.split()
 
     if len(tokens) >= 8:
@@ -135,11 +157,19 @@ def build_fallback_answer(context):
 
 
 def run_llm(query, context):
-    # If the RAG context contains an explicit answer, return it directly.
-    # This prevents small-model hallucination/repetition for exact facts.
+    """
+    Runs real LLM inference.
+
+    If CUDA is available, the model and inputs are moved to GPU.
+    If CUDA is not available, it falls back to CPU.
+
+    For direct math/exact facts, it can return the RAG answer directly.
+    For explanation questions, it runs the model.
+    """
+
     direct_answer = extract_direct_answer(context)
 
-    if direct_answer:
+    if direct_answer and is_math_or_exact_fact_query(query):
         return direct_answer
 
     tokenizer, model = load_model()
@@ -170,7 +200,8 @@ Complete answer:
             max_length=512
         )
 
-        inputs = {key: value.to("cpu") for key, value in inputs.items()}
+        # Move input tensors to the same device as the model
+        inputs = {key: value.to(DEVICE) for key, value in inputs.items()}
 
         with torch.no_grad():
             outputs = model.generate(
@@ -184,7 +215,11 @@ Complete answer:
                 repetition_penalty=1.5
             )
 
-        answer = tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
+        # Move output back to CPU before decoding
+        answer = tokenizer.decode(
+            outputs[0].detach().cpu(),
+            skip_special_tokens=True
+        ).strip()
 
     if is_weak_answer(answer) or looks_repetitive(answer):
         answer = build_fallback_answer(context)
