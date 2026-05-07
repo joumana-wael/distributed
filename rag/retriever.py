@@ -15,14 +15,19 @@ STOPWORDS = {
 
 def tokenize(text):
     tokens = re.findall(r"\b\w+\b", text.lower())
-    return set(token for token in tokens if token not in STOPWORDS)
+
+    return set(
+        token
+        for token in tokens
+        if token not in STOPWORDS
+    )
 
 
 def normalize_math(text):
     return text.lower().replace(" ", "")
 
 
-def retrieve_context(query, top_k=1):
+def retrieve_context(query, top_k=3):
     if not os.path.exists(KNOWLEDGE_BASE_PATH):
         return "No knowledge base found."
 
@@ -34,36 +39,78 @@ def retrieve_context(query, top_k=1):
         ]
 
     query_tokens = tokenize(query)
+
     normalized_query = normalize_math(query)
 
     scored = []
 
     for paragraph in paragraphs:
         paragraph_tokens = tokenize(paragraph)
+
         normalized_paragraph = normalize_math(paragraph)
 
         score = 0
 
-        # Normal keyword overlap
-        score += len(query_tokens.intersection(paragraph_tokens))
+        # -----------------------------
+        # General keyword overlap
+        # -----------------------------
+        overlap = len(
+            query_tokens.intersection(paragraph_tokens)
+        )
 
-        # Strong boost for math/exact expression matches like 2+2
-        math_expressions = re.findall(r"\d+\s*[\+\-\*/]\s*\d+", query)
+        if paragraph_tokens:
+            score += overlap / len(paragraph_tokens)
+
+        # -----------------------------
+        # Strong boost for Question: match
+        # -----------------------------
+        question_match = re.search(
+            r"Question:\s*(.*)",
+            paragraph,
+            re.IGNORECASE
+        )
+
+        if question_match:
+            question_text = question_match.group(1)
+
+            question_tokens = tokenize(question_text)
+
+            question_overlap = len(
+                query_tokens.intersection(question_tokens)
+            )
+
+            score += question_overlap * 10
+
+        # -----------------------------
+        # Strong boost for exact math
+        # -----------------------------
+        math_expressions = re.findall(
+            r"\d+\s*[\+\-\*/]\s*\d+",
+            query
+        )
 
         for expr in math_expressions:
             if normalize_math(expr) in normalized_paragraph:
                 score += 100
 
-        # Boost if the question text appears in the paragraph
+        # -----------------------------
+        # Strong boost for exact query
+        # -----------------------------
         if normalized_query in normalized_paragraph:
             score += 50
 
         if score > 0:
             scored.append((score, paragraph))
 
-    scored.sort(reverse=True, key=lambda item: item[0])
+    scored.sort(
+        reverse=True,
+        key=lambda item: item[0]
+    )
 
     if not scored:
         return "No relevant context found in the knowledge base."
 
-    return "\n".join(paragraph for score, paragraph in scored[:top_k])
+    return "\n".join(
+        paragraph
+        for score, paragraph in scored[:top_k]
+    )

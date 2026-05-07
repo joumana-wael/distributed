@@ -1,57 +1,167 @@
-Load balancing is the process of distributing incoming requests across multiple servers or worker nodes to improve performance, reduce latency, and prevent overload on a single node.
+Question: What is a distributed system?
+Answer: A distributed system is a collection of independent computers or nodes that work together to achieve a common goal while appearing to users as a single system.
 
-Round Robin is a load balancing strategy that distributes requests sequentially across available workers in equal order.
+Question: What is load balancing?
+Answer: Load balancing is the process of distributing incoming requests across multiple servers or worker nodes to improve performance, reduce latency, and prevent overload on a single node.
 
-Least Connections is a load balancing strategy that sends new requests to the worker with the fewest active connections.
+Question: What is Round Robin load balancing?
+Answer: Round Robin is a load balancing strategy that distributes requests sequentially across available worker nodes in equal order.
 
-Load-aware routing selects workers based on current load, active tasks, and performance metrics such as latency or utilization.
+Question: What is Least Connections load balancing?
+Answer: Least Connections is a load balancing strategy that sends new requests to the worker with the fewest active connections.
 
-Fault tolerance is the ability of a distributed system to continue operating even when one or more nodes fail.
+Question: What is load-aware routing?
+Answer: Load-aware routing selects workers based on current load, active tasks, latency, or utilization metrics before assigning requests.
 
-In this project, worker fault tolerance is implemented by checking worker health through REST API endpoints and skipping unavailable workers.
+Question: Why is load balancing important?
+Answer: Load balancing improves system performance, increases throughput, reduces latency, and prevents individual nodes from becoming overloaded.
 
-In this project, master node fault tolerance is implemented by the global load balancer checking master health and routing requests only to available master nodes.
+Question: What is fault tolerance?
+Answer: Fault tolerance is the ability of a distributed system to continue operating even when one or more nodes fail.
 
-RAG stands for Retrieval-Augmented Generation. It retrieves relevant information from a knowledge base and provides it as context to the LLM before generating an answer.
+Question: How is worker fault tolerance implemented in this project?
+Answer: Worker fault tolerance is implemented by checking each worker node's REST health endpoint before assigning tasks. If a worker fails or becomes unavailable, the local load balancer skips it and reassigns the task to another healthy worker.
 
-A master node coordinates request scheduling, monitors performance, and forwards requests to a local load balancer.
+Question: How is master-node fault tolerance implemented in this project?
+Answer: Master-node fault tolerance is implemented by the Global Load Balancer checking each master's health endpoint before routing requests. If a master node fails, requests are redirected to another healthy master node.
 
-A worker node processes the request, retrieves context using RAG, runs LLM inference, and returns the final response.
+Question: What is scalability in distributed systems?
+Answer: Scalability is the ability of a system to handle increasing workload by distributing tasks across additional servers, master nodes, or worker nodes.
 
-The Global Load Balancer is the entry point of the system. It receives real user requests through a REST API and distributes them across available master nodes.
+Question: What is latency?
+Answer: Latency measures the time taken for a request to be processed and completed from start to finish.
 
-A Master Node coordinates request handling. It receives requests from the Global Load Balancer, forwards them to its local Load Balancer, tracks request counts, monitors latency, and handles failures.
+Question: What is throughput?
+Answer: Throughput measures how many requests a system can process successfully per second.
 
-A Local Load Balancer belongs to a Master Node and distributes requests across that master's worker pool.
+Question: What is a REST API?
+Answer: A REST API is a communication interface that allows independent services to exchange data using HTTP requests.
 
-Worker Nodes are responsible for executing the main processing task. Each worker retrieves context using the RAG module, runs LLM inference, and returns the response with timing and status information.
+Question: Why are REST APIs used in this project?
+Answer: REST APIs allow the Global Load Balancer, Master Nodes, and Worker Nodes to communicate as independent distributed services.
 
-REST API communication allows different system components to run as independent services. In this project, the Global Load Balancer communicates with Master Nodes through REST APIs, and Master Nodes communicate with Worker Nodes through REST APIs.
+Question: What is the role of the Global Load Balancer?
+Answer: The Global Load Balancer is the entry point of the system. It receives user requests and distributes them across available master nodes.
 
-Round Robin distributes requests sequentially across available nodes. It is simple, fair, and works well when all nodes have similar processing capacity.
+Question: What is the role of a Master Node?
+Answer: A Master Node coordinates request handling, forwards tasks to its local load balancer, monitors worker status, tracks latency, and manages failures.
 
-Least Connections sends each new request to the node with the fewest active connections. It is useful when some requests take longer than others.
+Question: What is the role of a Local Load Balancer?
+Answer: A Local Load Balancer belongs to a Master Node and distributes requests across that master's worker pool.
 
-Load-aware routing considers metrics such as active tasks, latency, and utilization before selecting a node. It is useful when workers have different performance levels.
+Question: What do Worker Nodes do?
+Answer: Worker Nodes process requests assigned by the master node. Each worker retrieves context using RAG, runs LLM inference, and returns the generated response.
 
-Fault tolerance allows the system to continue operating when one or more nodes fail. Failed nodes are detected through health-check endpoints and excluded from scheduling decisions.
+Question: What is RAG?
+Answer: RAG stands for Retrieval-Augmented Generation. It retrieves relevant information from a knowledge base and provides it to the LLM before generating a response.
 
-Worker fault tolerance is implemented by checking each worker's health endpoint before assigning tasks. If a worker fails, the local Load Balancer skips it and reassigns tasks to healthy workers in the same pool.
+Question: Why is RAG useful?
+Answer: RAG improves answer accuracy by providing the LLM with relevant contextual information before generation.
 
-Master-node fault tolerance is implemented by checking each master's health endpoint before routing requests. If a master fails, the Global Load Balancer redirects traffic to the remaining healthy master node.
+Question: What is an LLM?
+Answer: A Large Language Model, or LLM, is an AI model trained on large amounts of text data to understand and generate human language.
 
-Scalability means the system can handle increasing numbers of requests by distributing work across more masters and workers.
+Question: What LLM is used in this project?
+Answer: This project uses a Hugging Face FLAN-T5 model for real LLM inference.
 
-Latency measures the time taken to complete a request. Throughput measures how many requests the system can process per second.
+Question: What does the worker do before running the LLM?
+Answer: Before running the LLM, the worker retrieves relevant context from the RAG knowledge base and prepares the prompt for inference.
 
-RAG stands for Retrieval-Augmented Generation. It retrieves relevant facts from the knowledge base and passes them to the LLM as context before generating an answer.
+Question: What happens after the worker finishes inference?
+Answer: After inference, the worker returns the generated answer, latency information, status, and worker identifier to the master node.
 
-The real LLM inference module uses a Hugging Face model to generate answers from the user query and retrieved context.
+Question: What is GPU computing?
+Answer: GPU computing uses Graphics Processing Units to accelerate parallel processing tasks such as machine learning and LLM inference.
 
-In the two-master architecture, Master Node 1 controls Workers 0 to 3, while Master Node 2 controls Workers 4 to 7.
+Question: Why are GPUs useful for LLM inference?
+Answer: GPUs can process many operations in parallel, which significantly speeds up deep learning inference compared to CPUs.
 
-Question: What is 2+2?
-Answer: 2+2 = 4.
+Question: What is CUDA?
+Answer: CUDA is NVIDIA's parallel computing platform and programming framework that enables software to use NVIDIA GPUs for accelerated computation.
 
-The sum of 2 plus 2 is 4.
+Question: How is CUDA used in this project?
+Answer: CUDA is used through PyTorch to run LLM inference on NVIDIA GPUs for faster processing.
 
+Question: What does torch.cuda.is_available() check?
+Answer: torch.cuda.is_available() checks whether CUDA-compatible GPUs are available for PyTorch inference.
+
+Question: What is GPU utilization?
+Answer: GPU utilization measures how actively the GPU is being used during computation or inference tasks.
+
+Question: How is GPU utilization monitored in this project?
+Answer: GPU utilization is monitored using the nvidia-smi tool while worker nodes process LLM inference requests.
+
+Question: What happens if a worker node fails during execution?
+Answer: If a worker node fails, the local load balancer detects the failure through health checks and redirects requests to healthy workers.
+
+Question: What happens if a master node fails?
+Answer: If a master node fails, the Global Load Balancer skips the failed master and routes requests to another healthy master node.
+
+Question: What is parallel processing?
+Answer: Parallel processing is the execution of multiple tasks simultaneously across multiple processing units or worker nodes.
+
+Question: How does this project support parallel processing?
+Answer: This project supports parallel processing by distributing requests across multiple worker nodes that execute inference tasks concurrently.
+
+Question: What scheduling strategy is used in this project?
+Answer: This project supports scheduling strategies such as Round Robin, Least Connections, and load-aware routing.
+
+Question: Why is Round Robin useful?
+Answer: Round Robin is simple, fair, and effective when all worker nodes have similar processing capabilities.
+
+Question: Why is Least Connections useful?
+Answer: Least Connections is useful when some requests take longer than others because it balances active workload dynamically.
+
+Question: What is health checking?
+Answer: Health checking is the process of verifying whether a node or service is alive and available before assigning tasks to it.
+
+Question: How are worker health checks performed?
+Answer: Worker health checks are performed by sending REST API requests to each worker's health endpoint.
+
+Question: How are master health checks performed?
+Answer: Master health checks are performed by the Global Load Balancer through REST API health endpoints exposed by each master node.
+
+Question: What architecture does this project use?
+Answer: This project uses a distributed two-master multi-worker architecture connected through REST APIs.
+
+Question: How are workers divided between the masters?
+Answer: In the two-master architecture, Master Node 1 controls Workers 0 to 3, while Master Node 2 controls Workers 4 to 7.
+
+Question: What is the complete request flow in this system?
+Answer: A user request is first received by the Global Load Balancer, then routed to a Master Node, forwarded to a Local Load Balancer, assigned to a Worker Node, processed using RAG and LLM inference, and finally returned to the user.
+
+Question: Why is this architecture fault tolerant?
+Answer: This architecture is fault tolerant because failed workers and masters are detected through health checks and excluded from scheduling decisions.
+
+Question: Why is this architecture scalable?
+Answer: This architecture is scalable because additional workers or master nodes can be added to distribute increasing workloads.
+
+Question: What metrics are measured in this project?
+Answer: This project measures latency, throughput, successful requests, failed requests, and GPU utilization.
+
+Question: What is successful request handling?
+Answer: Successful request handling means the system processed the request completely and returned a valid response without failure.
+
+Question: What is a failed request?
+Answer: A failed request is a request that could not be completed because of unavailable nodes, communication failures, or processing errors.
+
+Question: How are requests distributed in the two-master system?
+Answer: Requests are distributed by the Global Load Balancer across available master nodes using the selected scheduling strategy.
+
+Question: Why are Worker Nodes independent services?
+Answer: Worker Nodes are independent services so they can process requests separately, scale independently, and fail without stopping the entire system.
+
+Question: Why are Master Nodes independent services?
+Answer: Master Nodes are independent services to improve scalability, distribute scheduling work, and support fault tolerance.
+
+Question: What framework is used for the REST APIs in this project?
+Answer: This project uses FastAPI to implement REST API communication between distributed services.
+
+Question: Why is FastAPI useful for this project?
+Answer: FastAPI provides high-performance asynchronous REST APIs that are suitable for distributed systems and concurrent request handling.
+
+Question: What is this project about?
+Answer: This project is a distributed AI inference system that combines REST APIs, load balancing, fault tolerance, Retrieval-Augmented Generation (RAG), and Large Language Model inference. The system distributes requests across multiple master and worker nodes, supports GPU acceleration using CUDA, and measures performance metrics such as latency, throughput, and GPU utilization.
+
+Question: What does this distributed AI system do?
+Answer: This distributed AI system receives user requests through a Global Load Balancer, routes them to Master Nodes and Worker Nodes through REST APIs, retrieves contextual information using RAG, runs LLM inference, and returns generated responses while supporting scalability and fault tolerance.
