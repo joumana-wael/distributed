@@ -8,17 +8,20 @@ class MasterClient:
         self.base_url = base_url
 
     def is_available(self):
+     for _ in range(3):
         try:
-            response = requests.get(f"{self.base_url}/health", timeout=2)
+            response = requests.get(f"{self.base_url}/health", timeout=10)
 
             if response.status_code != 200:
-                return False
+                continue
 
             data = response.json()
             return data.get("is_alive", False)
 
         except requests.RequestException:
-            return False
+            continue
+
+     return False
 
     def handle_request(self, request):
         try:
@@ -51,13 +54,13 @@ class MasterClient:
             raise RuntimeError(f"Master {self.master_id} connection failed: {e}")
 
     def fail(self):
-        response = requests.post(f"{self.base_url}/fail", timeout=2)
+        response = requests.post(f"{self.base_url}/fail", timeout=10)
         return response.json()
 
     def recover(self):
-        response = requests.post(f"{self.base_url}/recover", timeout=2)
+        response = requests.post(f"{self.base_url}/recover", timeout=10)
         return response.json()
 
     def get_summary(self):
-        response = requests.get(f"{self.base_url}/summary", timeout=5)
+        response = requests.get(f"{self.base_url}/summary", timeout=10)
         return response.json()

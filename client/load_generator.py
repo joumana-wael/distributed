@@ -149,7 +149,7 @@ def run_load_test(scheduler, num_users=100):
         thread = threading.Thread(target=simulate_user, args=(scheduler, i))
         threads.append(thread)
         thread.start()
-        time.sleep(0.001)
+        time.sleep(0.3)
 
     for thread in threads:
         thread.join()
