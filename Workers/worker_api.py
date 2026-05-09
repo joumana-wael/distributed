@@ -110,4 +110,5 @@ if __name__ == "__main__":
 
     print(f"[Worker {worker_id}] Starting REST API on port {args.port}")
 
-    uvicorn.run(app, host="127.0.0.1", port=args.port)
+    uvicorn.run(app, host="0.0.0.0", port=args.port)
+    
