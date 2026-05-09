@@ -1,51 +1,51 @@
 request_id,master_id,worker_id,query,start_time,end_time,latency,status,error
-1,2,2,Query 1,1778330602.470856,1778330603.9723897,1.5015337467193604,success,
-3,2,3,Query 3,1778330604.094245,1778330605.4311962,1.3369512557983398,success,
-2,1,1,Query 2,1778330604.159837,1778330605.530986,1.3711490631103516,success,
-5,2,2,Query 5,1778330606.0462198,1778330607.3120584,1.265838623046875,success,
-7,2,3,Query 7,1778330607.9353185,1778330609.2794049,1.3440864086151123,success,
-6,1,1,Query 6,1778330608.497242,1778330609.8935049,1.3962628841400146,success,
-0,1,0,Query 0,1778330602.5278237,1778330610.7651007,8.237277030944824,success,
-9,2,2,Query 9,1778330609.5798738,1778330610.9502141,1.370340347290039,success,
-4,1,0,Query 4,1778330606.582188,1778330612.0742812,5.492093324661255,success,
-11,2,3,Query 11,1778330611.294445,1778330612.6874673,1.3930222988128662,success,
-8,1,0,Query 8,1778330610.1976507,1778330613.2459311,3.0482804775238037,success,
-10,1,1,Query 10,1778330612.0358887,1778330613.3962562,1.3603675365447998,success,
-13,2,2,Query 13,1778330613.2557597,1778330614.5692723,1.3135125637054443,success,
-12,1,0,Query 12,1778330614.076337,1778330615.3810143,1.3046772480010986,success,
-15,2,3,Query 15,1778330615.0356724,1778330616.2690825,1.233410120010376,success,
-14,1,1,Query 14,1778330615.9165125,1778330617.288646,1.372133493423462,success,
-17,2,2,Query 17,1778330617.0567255,1778330618.621482,1.5647563934326172,success,
-16,1,0,Query 16,1778330617.7958717,1778330619.0454803,1.2496085166931152,success,
-19,2,3,Query 19,1778330618.9193976,1778330620.3091917,1.389794111251831,success,
-18,1,1,Query 18,1778330619.5170915,1778330620.7809458,1.2638542652130127,success,
-21,2,2,Query 21,1778330620.756674,1778330622.0189464,1.2622723579406738,success,
-20,1,0,Query 20,1778330621.4177043,1778330622.5781105,1.1604061126708984,success,
-23,2,3,Query 23,1778330622.5553036,1778330623.8111162,1.255812644958496,success,
-22,1,1,Query 22,1778330623.3178005,1778330624.4457548,1.1279542446136475,success,
-25,2,2,Query 25,1778330624.7811213,1778330625.970253,1.189131736755371,success,
-24,1,0,Query 24,1778330625.7175663,1778330626.8699203,1.1523540019989014,success,
-27,2,3,Query 27,1778330626.8953226,1778330628.1442573,1.2489347457885742,success,
-26,1,1,Query 26,1778330627.5958323,1778330628.6563349,1.060502529144287,success,
-29,2,2,Query 29,1778330628.8366451,1778330630.066091,1.2294459342956543,success,
-28,1,0,Query 28,1778330629.456212,1778330630.6730657,1.2168536186218262,success,
-31,2,3,Query 31,1778330630.704808,1778330631.9136806,1.2088725566864014,success,
-30,1,1,Query 30,1778330631.2970343,1778330632.7585807,1.4615464210510254,success,
-33,2,2,Query 33,1778330632.3408847,1778330633.5265043,1.185619592666626,success,
-32,1,0,Query 32,1778330633.0563154,1778330634.3546028,1.2982873916625977,success,
-35,2,3,Query 35,1778330634.0546875,1778330635.316147,1.2614595890045166,success,
-34,1,1,Query 34,1778330634.9765613,1778330636.2702904,1.2937290668487549,success,
-37,2,2,Query 37,1778330635.8157125,1778330636.982812,1.1670994758605957,success,
-36,1,0,Query 36,1778330636.6111202,1778330637.9892583,1.3781380653381348,success,
-39,2,3,Query 39,1778330637.4497817,1778330638.681311,1.2315292358398438,success,
-38,1,1,Query 38,1778330638.6735268,1778330639.9765654,1.3030385971069336,success,
-41,2,2,Query 41,1778330639.734751,1778330641.0380461,1.3032951354980469,success,
-40,1,0,Query 40,1778330640.5630965,1778330641.9363327,1.3732361793518066,success,
-43,2,3,Query 43,1778330641.5342379,1778330642.6666439,1.1324059963226318,success,
-42,1,1,Query 42,1778330642.3788292,1778330643.8973684,1.5185391902923584,success,
-45,2,2,Query 45,1778330643.376329,1778330644.5676496,1.1913206577301025,success,
-44,1,0,Query 44,1778330644.3263943,1778330645.4986677,1.1722733974456787,success,
-47,2,3,Query 47,1778330645.2144065,1778330646.559654,1.345247507095337,success,
-46,1,1,Query 46,1778330646.068091,1778330647.436318,1.3682270050048828,success,
-49,2,2,Query 49,1778330647.0546336,1778330648.4050462,1.3504126071929932,success,
-48,1,0,Query 48,1778330647.8957307,1778330649.0122774,1.116546630859375,success,
+1,N/A,N/A,Query 1,0,0,0,failed,"Request 1 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 1 failed after reassignment attempts: None""}"
+0,1,0,Query 0,1778363100.9127393,1778363111.4054863,10.492747068405151,success,
+3,N/A,N/A,Query 3,0,0,0,failed,"Request 3 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 3 failed after reassignment attempts: None""}"
+2,1,0,Query 2,1778363104.7417185,1778363112.952293,8.210574388504028,success,
+4,1,0,Query 4,1778363107.434156,1778363114.3444686,6.910312652587891,success,
+6,1,0,Query 6,1778363110.152947,1778363115.7085903,5.555643320083618,success,
+5,N/A,N/A,Query 5,0,0,0,failed,"Request 5 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 5 failed after reassignment attempts: None""}"
+8,1,0,Query 8,1778363112.922254,1778363117.2698038,4.347549676895142,success,
+10,1,0,Query 10,1778363115.6123762,1778363118.733014,3.120637893676758,success,
+7,N/A,N/A,Query 7,0,0,0,failed,"Request 7 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 7 failed after reassignment attempts: None""}"
+9,N/A,N/A,Query 9,0,0,0,failed,"Request 9 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 9 failed after reassignment attempts: None""}"
+11,N/A,N/A,Query 11,0,0,0,failed,"Request 11 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 11 failed after reassignment attempts: None""}"
+12,N/A,N/A,Query 12,0,0,0,failed,"Request 12 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 12 failed after reassignment attempts: None""}"
+13,N/A,N/A,Query 13,0,0,0,failed,"Request 13 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 13 failed after reassignment attempts: None""}"
+14,N/A,N/A,Query 14,0,0,0,failed,"Request 14 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 14 failed after reassignment attempts: None""}"
+15,N/A,N/A,Query 15,0,0,0,failed,"Request 15 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 15 failed after reassignment attempts: None""}"
+16,N/A,N/A,Query 16,0,0,0,failed,"Request 16 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 16 failed after reassignment attempts: None""}"
+17,N/A,N/A,Query 17,0,0,0,failed,"Request 17 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 17 failed after reassignment attempts: None""}"
+18,N/A,N/A,Query 18,0,0,0,failed,"Request 18 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 18 failed after reassignment attempts: None""}"
+19,N/A,N/A,Query 19,0,0,0,failed,"Request 19 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 19 failed after reassignment attempts: None""}"
+20,N/A,N/A,Query 20,0,0,0,failed,"Request 20 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 20 failed after reassignment attempts: None""}"
+21,N/A,N/A,Query 21,0,0,0,failed,"Request 21 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 21 failed after reassignment attempts: None""}"
+22,N/A,N/A,Query 22,0,0,0,failed,"Request 22 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 22 failed after reassignment attempts: None""}"
+23,N/A,N/A,Query 23,0,0,0,failed,"Request 23 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 23 failed after reassignment attempts: None""}"
+24,N/A,N/A,Query 24,0,0,0,failed,"Request 24 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 24 failed after reassignment attempts: None""}"
+25,N/A,N/A,Query 25,0,0,0,failed,"Request 25 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 25 failed after reassignment attempts: None""}"
+26,N/A,N/A,Query 26,0,0,0,failed,"Request 26 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 26 failed after reassignment attempts: None""}"
+27,N/A,N/A,Query 27,0,0,0,failed,"Request 27 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 27 failed after reassignment attempts: None""}"
+28,N/A,N/A,Query 28,0,0,0,failed,"Request 28 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 28 failed after reassignment attempts: None""}"
+29,N/A,N/A,Query 29,0,0,0,failed,"Request 29 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 29 failed after reassignment attempts: None""}"
+30,N/A,N/A,Query 30,0,0,0,failed,"Request 30 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 30 failed after reassignment attempts: None""}"
+31,N/A,N/A,Query 31,0,0,0,failed,"Request 31 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 31 failed after reassignment attempts: None""}"
+32,N/A,N/A,Query 32,0,0,0,failed,"Request 32 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 32 failed after reassignment attempts: None""}"
+33,N/A,N/A,Query 33,0,0,0,failed,"Request 33 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 33 failed after reassignment attempts: None""}"
+34,N/A,N/A,Query 34,0,0,0,failed,"Request 34 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 34 failed after reassignment attempts: None""}"
+35,N/A,N/A,Query 35,0,0,0,failed,"Request 35 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 35 failed after reassignment attempts: None""}"
+36,N/A,N/A,Query 36,0,0,0,failed,"Request 36 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 36 failed after reassignment attempts: None""}"
+37,N/A,N/A,Query 37,0,0,0,failed,"Request 37 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 37 failed after reassignment attempts: None""}"
+38,N/A,N/A,Query 38,0,0,0,failed,"Request 38 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 38 failed after reassignment attempts: None""}"
+39,N/A,N/A,Query 39,0,0,0,failed,"Request 39 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 39 failed after reassignment attempts: None""}"
+40,N/A,N/A,Query 40,0,0,0,failed,"Request 40 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 40 failed after reassignment attempts: None""}"
+41,N/A,N/A,Query 41,0,0,0,failed,"Request 41 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 41 failed after reassignment attempts: None""}"
+42,N/A,N/A,Query 42,0,0,0,failed,"Request 42 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 42 failed after reassignment attempts: None""}"
+43,N/A,N/A,Query 43,0,0,0,failed,"Request 43 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 43 failed after reassignment attempts: None""}"
+44,N/A,N/A,Query 44,0,0,0,failed,"Request 44 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 44 failed after reassignment attempts: None""}"
+45,N/A,N/A,Query 45,0,0,0,failed,"Request 45 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 45 failed after reassignment attempts: None""}"
+46,N/A,N/A,Query 46,0,0,0,failed,"Request 46 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 46 failed after reassignment attempts: None""}"
+47,N/A,N/A,Query 47,0,0,0,failed,"Request 47 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 47 failed after reassignment attempts: None""}"
+48,N/A,N/A,Query 48,0,0,0,failed,"Request 48 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 48 failed after reassignment attempts: None""}"
+49,N/A,N/A,Query 49,0,0,0,failed,"Request 49 failed after master reassignment attempts: Master 2 API error: {""detail"":""Request 49 failed after reassignment attempts: None""}"
