@@ -53,7 +53,7 @@ class GPUWorker:
             if not self.is_available():
                 raise RuntimeError(f"Worker {self.id} failed before inference")
 
-            result = run_llm(request.query, context)
+            llm_response = run_llm(request.query, context)
 
             if not self.is_available():
                 raise RuntimeError(f"Worker {self.id} failed during execution")
@@ -68,7 +68,9 @@ class GPUWorker:
                 "id": request.id,
                 "worker_id": self.id,
                 "query": request.query,
-                "result": result,
+                "result": llm_response["answer"],
+                "gpu_utilization": llm_response.get("gpu_utilization", 0),
+                "throughput": 1 / latency if latency > 0 else 0,
                 "start_time": start,
                 "end_time": end,
                 "latency": latency,
