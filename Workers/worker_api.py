@@ -67,7 +67,10 @@ def process_request(request: RequestModel):
         print(f"[Worker {worker_id}] Processing request {request.id}")
 
         context = retrieve_context(request.query)
-        result = run_llm(request.query, context)
+        llm_response = run_llm(request.query, context)
+
+        result = llm_response["answer"]
+        gpu_utilization = llm_response["gpu_utilization"]
 
         if not is_alive:
             raise HTTPException(
@@ -87,6 +90,7 @@ def process_request(request: RequestModel):
             "start_time": start,
             "end_time": end,
             "latency": latency,
+            "gpu_utilization": gpu_utilization,
             "status": "success",
             "error": ""
         }

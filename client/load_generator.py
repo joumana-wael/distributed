@@ -3,16 +3,47 @@ import csv
 import time
 import os
 from Common.models import Request
+import random
 
 
+rng = random.Random(42)
 results = []
 results_lock = threading.Lock()
+
+QUERIES = [
+    "What is distributed computing?",
+    "Explain gradient descent",
+    "What is load balancing?",
+    "How does GPU scheduling work?",
+    "Define neural networks",
+    "Difference between TCP and UDP",
+    "What is Kubernetes?",
+    "Explain Docker containers",
+    "What is microservices architecture?",
+    "How does hashing work?",
+    "What is a blockchain?",
+    "Explain REST API design",
+    "What is concurrency vs parallelism?",
+    "What is a deadlock?",
+    "Explain MapReduce",
+]
+
+# Global throughput metric
+global_throughput = 0
+
 
 def get_value(response, key, default=None):
     if isinstance(response, dict):
         return response.get(key, default)
 
     return getattr(response, key, default)
+
+
+def pick_query():
+    """Thread-safe seeded random query selection"""
+    with results_lock:
+        return rng.choice(QUERIES)
+
 
 def save_results_to_csv(filename):
     os.makedirs("logs", exist_ok=True)
@@ -28,6 +59,8 @@ def save_results_to_csv(filename):
             "start_time",
             "end_time",
             "latency",
+            "gpu_utilization",
+            "throughput",
             "status",
             "error"
         ])
@@ -41,6 +74,8 @@ def save_results_to_csv(filename):
                 get_value(r, "start_time"),
                 get_value(r, "end_time"),
                 get_value(r, "latency"),
+                get_value(r, "gpu_utilization"),
+                get_value(r, "throughput"),
                 get_value(r, "status", "success"),
                 get_value(r, "error", "")
             ])
@@ -48,7 +83,8 @@ def save_results_to_csv(filename):
 
 def simulate_user(entry_point, user_id):
     try:
-        request = Request(user_id, f"Query {user_id}")
+        query = pick_query()
+        request = Request(user_id, query)
 
         if hasattr(entry_point, "handle_request"):
             response = entry_point.handle_request(request)
@@ -71,10 +107,12 @@ def simulate_user(entry_point, user_id):
                 "id": user_id,
                 "master_id": "N/A",
                 "worker_id": "N/A",
-                "query": f"Query {user_id}",
+                "query": query,
                 "start_time": 0,
                 "end_time": 0,
                 "latency": 0,
+                "gpu_utilization": 0,
+                "throughput": 0,
                 "status": "failed",
                 "error": str(e)
             })
@@ -98,6 +136,11 @@ def print_summary(total_duration, strategy):
         if float(get_value(r, "latency", 0)) > 0
     ]
 
+    throughput = (
+        len(successful) / total_duration
+        if total_duration > 0 else 0
+    )
+
     print(f"\n========== {strategy.upper()} FAULT TOLERANCE TEST SUMMARY ==========")
     print(f"Total requests       : {total_requests}")
     print(f"Successful requests  : {len(successful)}")
@@ -112,7 +155,7 @@ def print_summary(total_duration, strategy):
     print(f"Average latency      : {sum(latencies) / len(latencies):.4f} seconds")
     print(f"Minimum latency      : {min(latencies):.4f} seconds")
     print(f"Maximum latency      : {max(latencies):.4f} seconds")
-    print(f"Throughput           : {len(successful) / total_duration:.2f} requests/second")
+    print(f"Throughput           : {throughput:.2f} requests/second")
 
     worker_counts = {}
 
@@ -126,6 +169,7 @@ def print_summary(total_duration, strategy):
 
     print("====================================================\n")
 
+
 def get_strategy_name(entry_point):
     # Case 1: old architecture, entry_point is Scheduler
     if hasattr(entry_point, "lb"):
@@ -136,8 +180,12 @@ def get_strategy_name(entry_point):
         return getattr(entry_point, "strategy", "global_round_robin")
 
     return "unknown"
+
+
 def run_load_test(scheduler, num_users=100):
     global results
+    global global_throughput
+
     results = []
 
     strategy = get_strategy_name(scheduler)
@@ -149,6 +197,8 @@ def run_load_test(scheduler, num_users=100):
         thread = threading.Thread(target=simulate_user, args=(scheduler, i))
         threads.append(thread)
         thread.start()
+
+        # Small delay to avoid overwhelming local machine instantly
         time.sleep(0.3)
 
     for thread in threads:
@@ -156,6 +206,16 @@ def run_load_test(scheduler, num_users=100):
 
     test_end = time.time()
     total_duration = test_end - test_start
+
+    successful_requests = [
+        r for r in results
+        if get_value(r, "status", "success") == "success"
+    ]
+
+    global_throughput = (
+        len(successful_requests) / total_duration
+        if total_duration > 0 else 0
+    )
 
     filename = f"logs/results_{strategy}_fault_tolerance_{num_users}_users.csv"
 
