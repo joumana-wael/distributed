@@ -1,0 +1,2 @@
+users,total_requests,successful_requests,failed_requests,total_duration,throughput,average_latency,min_latency,max_latency,csv_file
+500,500,500,0,0.6089558601379395,821.0775734824869,0.12272458839416504,0.05057263374328613,0.2004411220550537,logs/simulated_load_tests\simulated_load_test_round_robin_500_users.csv
