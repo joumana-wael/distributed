@@ -1,12 +1,21 @@
+import os
+import random
 import re
 import threading
+import time
+
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 
 MODEL_NAME = "google/flan-t5-small"
 
-# Automatically use GPU if CUDA is available, otherwise use CPU
+# Simulation mode for large-scale load testing
+SIMULATE_INFERENCE = os.getenv("SIMULATE_INFERENCE", "0") == "1"
+SIM_MIN_DELAY = float(os.getenv("SIM_MIN_DELAY", "0.05"))
+SIM_MAX_DELAY = float(os.getenv("SIM_MAX_DELAY", "0.20"))
+
+# Automatically use GPU if CUDA is available, otherwise CPU
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MODEL_DTYPE = torch.float16 if DEVICE == "cuda" else torch.float32
 
@@ -23,6 +32,7 @@ def load_model():
     with _load_lock:
         if _tokenizer is None or _model is None:
             print("[LLM] Loading real model...")
+            print(f"[LLM] Simulation mode: {SIMULATE_INFERENCE}")
             print(f"[LLM] CUDA available: {torch.cuda.is_available()}")
             print(f"[LLM] Using device: {DEVICE}")
 
@@ -41,7 +51,6 @@ def load_model():
             _model.to(DEVICE)
             _model.eval()
 
-            # This proves where the model is actually loaded
             print(f"[LLM] Model parameter device: {next(_model.parameters()).device}")
             print("[LLM] Model loaded successfully.")
 
@@ -49,6 +58,10 @@ def load_model():
 
 
 def preload_model():
+    if SIMULATE_INFERENCE:
+        print("[LLM] Simulation mode enabled. Real model preload skipped.")
+        return
+
     load_model()
 
 
@@ -58,6 +71,7 @@ def extract_direct_answer(context):
     Answer: 2+2 = 4.
     return that exact answer for simple factual/math questions.
     """
+
     for line in context.splitlines():
         line = line.strip()
 
@@ -75,6 +89,7 @@ def is_math_or_exact_fact_query(query):
     Only bypass the LLM for simple math/exact fact queries.
     For explanation questions, the LLM should still generate the answer.
     """
+
     query_lower = query.lower()
 
     if re.search(r"\d+\s*[\+\-\*/]\s*\d+", query_lower):
@@ -108,11 +123,9 @@ def is_weak_answer(answer):
     if cleaned in weak_answers:
         return True
 
-    # Catches weak outputs like "(4).", "4.", "(a)", etc.
     if len(cleaned.split()) < 4:
         return True
 
-    # Catches answers that are mostly symbols or option-like fragments
     if re.fullmatch(r"[\(\)\[\]\{\}\.\,\:\;\-\w]{1,8}", cleaned):
         return True
 
@@ -125,6 +138,7 @@ def looks_repetitive(answer):
     Example:
     '2+2 = 4 - 2 = 4 - 2 = 4'
     """
+
     cleaned = answer.strip().lower()
 
     parts = re.split(r"\s*[-|;]\s*", cleaned)
@@ -158,14 +172,33 @@ def build_fallback_answer(context):
 
 def run_llm(query, context):
     """
-    Runs real LLM inference.
+    Runs LLM inference.
 
-    If CUDA is available, the model and inputs are moved to GPU.
-    If CUDA is not available, it falls back to CPU.
+    Modes:
+    1. Real mode:
+       - Uses Hugging Face model.
+       - Uses CUDA if available.
+       - Falls back to CPU if CUDA is unavailable.
 
-    For direct math/exact facts, it can return the RAG answer directly.
-    For explanation questions, it runs the model.
+    2. Simulation mode:
+       - Enabled with SIMULATE_INFERENCE=1.
+       - Does not load the real model.
+       - Sleeps for a controlled delay.
+       - Used for large-scale load testing.
     """
+
+    if SIMULATE_INFERENCE:
+        delay = random.uniform(SIM_MIN_DELAY, SIM_MAX_DELAY)
+        time.sleep(delay)
+
+        return {
+            "answer": (
+                "SIMULATED_GPU_WORKER_RESPONSE: "
+                "This response simulates LLM inference delay for large-scale load testing."
+            ),
+            "gpu_utilization": get_gpu_utilization(),
+            "mode": "simulated"
+        }
 
     direct_answer = extract_direct_answer(context)
 
@@ -202,7 +235,6 @@ Complete answer:
             max_length=512
         )
 
-        # Move input tensors to the same device as the model
         inputs = {key: value.to(DEVICE) for key, value in inputs.items()}
 
         with torch.no_grad():
@@ -217,7 +249,6 @@ Complete answer:
                 repetition_penalty=1.5
             )
 
-        # Move output back to CPU before decoding
         answer = tokenizer.decode(
             outputs[0].detach().cpu(),
             skip_special_tokens=True
