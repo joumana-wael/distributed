@@ -69,7 +69,6 @@ class GPUWorker:
                 "worker_id": self.id,
                 "query": request.query,
                 "result": llm_response["answer"],
-                "gpu_utilization": llm_response.get("gpu_utilization", 0),
                 "throughput": 1 / latency if latency > 0 else 0,
                 "start_time": start,
                 "end_time": end,

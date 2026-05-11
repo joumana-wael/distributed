@@ -70,7 +70,6 @@ def process_request(request: RequestModel):
         llm_response = run_llm(request.query, context)
 
         result = llm_response["answer"]
-        gpu_utilization = llm_response["gpu_utilization"]
 
         if not is_alive:
             raise HTTPException(
@@ -90,7 +89,6 @@ def process_request(request: RequestModel):
             "start_time": start,
             "end_time": end,
             "latency": latency,
-            "gpu_utilization": gpu_utilization,
             "status": "success",
             "error": ""
         }

@@ -39,9 +39,9 @@ def main():
         strategy="global_round_robin"
     )
 
-    for users in [50, 100, 200]:
-        print(f"\n\n===== RUNNING LOAD TEST: {users} USERS =====")
-        run_load_test(global_lb, num_users=users)
+    #for users in [500, 1000]:
+        #print(f"\n\n===== RUNNING LOAD TEST: {users} USERS =====")
+    run_load_test(global_lb, num_users=500)
 
     print_master_summary(master1)
     print_master_summary(master2)

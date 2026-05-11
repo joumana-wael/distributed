@@ -59,8 +59,6 @@ def save_results_to_csv(filename):
             "start_time",
             "end_time",
             "latency",
-            "gpu_utilization",
-            "throughput",
             "status",
             "error"
         ])
@@ -74,8 +72,6 @@ def save_results_to_csv(filename):
                 get_value(r, "start_time"),
                 get_value(r, "end_time"),
                 get_value(r, "latency"),
-                get_value(r, "gpu_utilization"),
-                get_value(r, "throughput"),
                 get_value(r, "status", "success"),
                 get_value(r, "error", "")
             ])
@@ -111,8 +107,6 @@ def simulate_user(entry_point, user_id):
                 "start_time": 0,
                 "end_time": 0,
                 "latency": 0,
-                "gpu_utilization": 0,
-                "throughput": 0,
                 "status": "failed",
                 "error": str(e)
             })
@@ -141,7 +135,7 @@ def print_summary(total_duration, strategy):
         if total_duration > 0 else 0
     )
 
-    print(f"\n========== {strategy.upper()} FAULT TOLERANCE TEST SUMMARY ==========")
+    print(f"\n========== TEST SUMMARY ==========")
     print(f"Total requests       : {total_requests}")
     print(f"Successful requests  : {len(successful)}")
     print(f"Failed requests      : {failed}")
@@ -217,7 +211,7 @@ def run_load_test(scheduler, num_users=100):
         if total_duration > 0 else 0
     )
 
-    filename = f"logs/results_{strategy}_fault_tolerance_{num_users}_users.csv"
+    filename = f"logs/results_{num_users}_users.csv"
 
     save_results_to_csv(filename)
     print_summary(total_duration, strategy)
