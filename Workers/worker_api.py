@@ -88,8 +88,7 @@ def process_request(request: RequestModel):
 
         context = retrieve_context(request.query)
 
-        print(f"[Worker {worker_id}] Retrieved context for request {request.id}:")
-        print(context)
+        result = llm_response["answer"]
 
         llm_output = run_llm(request.query, context)
 
@@ -123,8 +122,6 @@ def process_request(request: RequestModel):
             "start_time": start,
             "end_time": end,
             "latency": latency,
-            "gpu_utilization": gpu_utilization,
-            "inference_mode": inference_mode,
             "status": "success",
             "error": ""
         }

@@ -7,16 +7,6 @@ import time
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-try:
-    from pynvml import (
-        nvmlInit,
-        nvmlDeviceGetHandleByIndex,
-        nvmlDeviceGetUtilizationRates
-    )
-    NVML_AVAILABLE = True
-except ImportError:
-    NVML_AVAILABLE = False
-
 
 MODEL_NAME = "google/flan-t5-small"
 
@@ -34,44 +24,6 @@ _model = None
 
 _load_lock = threading.Lock()
 _inference_lock = threading.Lock()
-
-# GPU monitoring globals
-_gpu_initialized = False
-_gpu_handle = None
-
-
-def initialize_gpu_monitor():
-    global _gpu_initialized, _gpu_handle
-
-    if DEVICE == "cuda" and NVML_AVAILABLE and not _gpu_initialized:
-        try:
-            nvmlInit()
-            _gpu_handle = nvmlDeviceGetHandleByIndex(0)
-            _gpu_initialized = True
-        except Exception:
-            _gpu_initialized = False
-            _gpu_handle = None
-
-
-def get_gpu_utilization():
-    """
-    Returns current GPU utilization percentage.
-    Returns 0 if running on CPU or if NVML is unavailable.
-    """
-
-    if DEVICE != "cuda" or not NVML_AVAILABLE:
-        return 0
-
-    initialize_gpu_monitor()
-
-    if _gpu_handle is None:
-        return 0
-
-    try:
-        utilization = nvmlDeviceGetUtilizationRates(_gpu_handle)
-        return utilization.gpu
-    except Exception:
-        return 0
 
 
 def load_model():
@@ -252,9 +204,7 @@ def run_llm(query, context):
 
     if direct_answer and is_math_or_exact_fact_query(query):
         return {
-            "answer": direct_answer,
-            "gpu_utilization": get_gpu_utilization(),
-            "mode": "direct_rag_answer"
+            "answer": direct_answer
         }
 
     tokenizer, model = load_model()
@@ -307,8 +257,7 @@ Complete answer:
     if is_weak_answer(answer) or looks_repetitive(answer):
         answer = build_fallback_answer(context)
 
+
     return {
-        "answer": answer,
-        "gpu_utilization": get_gpu_utilization(),
-        "mode": "real_llm"
+        "answer": answer
     }
