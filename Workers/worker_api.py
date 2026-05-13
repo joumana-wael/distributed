@@ -88,17 +88,14 @@ def process_request(request: RequestModel):
 
         context = retrieve_context(request.query)
 
-        result = llm_response["answer"]
-
         llm_output = run_llm(request.query, context)
+    
 
         if isinstance(llm_output, dict):
             result = llm_output.get("answer", "")
-            gpu_utilization = llm_output.get("gpu_utilization", 0)
             inference_mode = llm_output.get("mode", "unknown")
         else:
             result = llm_output
-            gpu_utilization = 0
             inference_mode = "legacy"
 
         with state_lock:

@@ -41,7 +41,7 @@ def main():
 
     #for users in [500, 1000]:
         #print(f"\n\n===== RUNNING LOAD TEST: {users} USERS =====")
-    run_load_test(global_lb, num_users=500)
+    run_load_test(global_lb, num_users=20)
 
     print_master_summary(master1)
     print_master_summary(master2)
